@@ -76,7 +76,7 @@ class RvizGoalListener():
 
         # Subscribe to sat fix
         self._sub_fix = rospy.Subscriber('fix', NavSatFix, self.gps_fix_callback)
-        
+
         # Subscribe to initialpose: Listen for starting position to plan a route.
         self._sub_init = rospy.Subscriber('initialpose', PoseWithCovarianceStamped, self.initpose_callback)
 
@@ -94,7 +94,7 @@ class RvizGoalListener():
     def graph_callback(self, graph):
         """ Callback to initialize to graph to plan on.
 
-        :param graph: The required graph. 
+        :param graph: The required graph.
         :type graph: geographic_msgs/RouteNetwork
         """
         if len(graph.points) > 0:
@@ -109,7 +109,7 @@ class RvizGoalListener():
 
     def initpose_callback(self, msg):
         """ Callback to aquire the initial position from RVIZ.
-        
+
         :param msg: The initial position.
         :type msg: geometry_msgs/PoseWithCovarianceStamped
         """
@@ -117,15 +117,15 @@ class RvizGoalListener():
             rospy.loginfo("Init pose received.")
             if not self.gridZone is None:
                 (map_trans, map_rot) = self.listener.lookupTransform(msg.header.frame_id, "/world", rospy.Time(0))
-                self._own_utmpoint = geodesy.utm.UTMPoint(easting=msg.pose.pose.position.x-map_trans[0], 
-                                                northing=msg.pose.pose.position.y-map_trans[1], 
-                                                altitude=msg.pose.pose.position.z-map_trans[2], 
-                                                zone=self.gridZone[0], 
+                self._own_utmpoint = geodesy.utm.UTMPoint(easting=msg.pose.pose.position.x-map_trans[0],
+                                                northing=msg.pose.pose.position.y-map_trans[1],
+                                                altitude=msg.pose.pose.position.z-map_trans[2],
+                                                zone=self.gridZone[0],
                                                 band=self.gridZone[1])
                 self._own_geo_point = self._own_utmpoint.toMsg()
             else:
                 rospy.logerr("Unknown UMT grid zone!")
-    
+
     def gps_fix_callback(self, msg):
         """ Callback to acquire the GPS Fix message from a robot.
 
@@ -134,11 +134,11 @@ class RvizGoalListener():
         """
         with self._lock:
             self._own_utmpoint = geodesy.utm.fromLatLong(msg.latitude, msg.longitude, msg.altitude)
-            self._own_geo_point = GeoPoint(msg.latitude, msg.longitude, msg.altitude) 
+            self._own_geo_point = GeoPoint(msg.latitude, msg.longitude, msg.altitude)
 
     def goal_callback(self, msg):
         """ Callback to acquire the goal position, and calculate the plan towards it.
-        
+
         :param msg: The goal position.
         :type msg: geometry_msgs/PoseStamped
         """
@@ -148,10 +148,10 @@ class RvizGoalListener():
                 try:
                     (map_trans, map_rot) = self.listener.lookupTransform(msg.header.frame_id, "/world", rospy.Time(0))
                     gridZone = self._own_utmpoint.gridZone()
-                    goal_utm = geodesy.utm.UTMPoint(easting=msg.pose.position.x-map_trans[0], 
-                                                    northing=msg.pose.position.y-map_trans[1], 
-                                                    altitude=msg.pose.position.z-map_trans[2], 
-                                                    zone=gridZone[0], 
+                    goal_utm = geodesy.utm.UTMPoint(easting=msg.pose.position.x-map_trans[0],
+                                                    northing=msg.pose.position.y-map_trans[1],
+                                                    altitude=msg.pose.position.z-map_trans[2],
+                                                    zone=gridZone[0],
                                                     band=gridZone[1])
                     geo_goal = goal_utm.toMsg()
                     path_plan = self.get_geo_path(self._own_geo_point, geo_goal)
@@ -251,7 +251,7 @@ class RvizGoalListener():
             marker.pose.position.x = utm_goal.easting
             marker.pose.position.y = utm_goal.northing
             marks.markers.append(marker)
-            
+
             # add distance to the goal
             marker = Marker(header = hdr,
                             ns = 'goal distance',

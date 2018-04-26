@@ -124,7 +124,7 @@ class RoutePlannerNode():
         :type req: geographic_msgs/GetGeoPath
 
         :return: The plan from start to goal position.
-        :rtype: geographic_msgs/GetGeoPathResponse 
+        :rtype: geographic_msgs/GetGeoPathResponse
         """
         rospy.loginfo('GetGeoPath: ' + str(req))
         self._calc_idx += 1
@@ -139,13 +139,14 @@ class RoutePlannerNode():
 
         try:
             planner_result = self.planner.geo_path(req)
-            
+
             self.resp.plan.poses = [GeoPoseStamped(pose=GeoPose(position=point)) for point in planner_result[0]]
             self.resp.network = planner_result[1]
             self.resp.start_seg = planner_result[2]
             self.resp.goal_seg = planner_result[3]
             self.resp.distance = planner_result[4]
             self.resp.success = not (self.resp.distance == -1)
+            # self.resp.success = not (len(self.resp.plan.poses) == 0)
             if not self.resp.success:
                 self.resp.status = 'No route found from :\n' + str(req.start) + ' to:\n' + str(req.goal)
             rospy.loginfo('GetGeoPath result: ' + str(self.resp))

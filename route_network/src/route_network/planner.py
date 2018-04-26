@@ -183,12 +183,12 @@ class Planner():
 
         Unlike the 'planner' method, the 'geo_path' method can receive GeoPoints out of the graph, upon such a case, the nearest segments on the OSM map are detected,
         and the planning is carried out.
-        
+
         :pram req: The request message.
         :param req: geographic_msgs/GetGeoPath
 
         :return: The computed path, as well as the ids of the RouteNetwork and the start and end segments, plus the length of the path. The length is set to -1 in case of failure.
-        :rtype: (geographic_msgs/GeoPoint[], uuid_msgs/UniqueID, uuid_msgs/UniqueID, uuid_msgs/UniqueID, length) 
+        :rtype: (geographic_msgs/GeoPoint[], uuid_msgs/UniqueID, uuid_msgs/UniqueID, uuid_msgs/UniqueID, length)
         :raises: :exc:`ValueError` if invalid request.
         """
         # check for possible errors in request
@@ -268,7 +268,7 @@ class Planner():
 
     def _planner_seg(self, start_geo_point, start_seg, goal_geo_point, goal_seg):
         """ Plan route from start to goal. The actual search algorithm to find a path is executed here.
-        
+
         :param start_geo_point: The start position.
         :type start_geo_point: geographic_msgs/GeoPoint
         :param start_seg: The nearest segment to the point.
@@ -277,7 +277,7 @@ class Planner():
         :type goal_geo_point: geographic_msgs/GeoPoint
         :param goal_seg: The nearest segment to the point.
         :type goal_seg: geographic_msgs/RouteSegment
- 
+
         :return: The planned path between start and goal, and its length.
         :rtype: (geographic_msgs/RoutePath, float)
 
